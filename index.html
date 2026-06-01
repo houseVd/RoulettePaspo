@@ -2,74 +2,86 @@
 <html lang="ht">
 <head>
     <meta charset="UTF-8">
-    <title>Roulette Paspò Ayisyen</title>
+    <title>Roulette Paspò Pro</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; background: #2c3e50; color: white; }
+        body { font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; background: #1a1a1a; color: white; }
         
-        /* Desen Roulette a */
-        #roulette-wheel {
-            width: 300px; height: 300px; border: 10px solid #f1c40f; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            background: conic-gradient(#e74c3c 0deg 60deg, #3498db 60deg 120deg, #2ecc71 120deg 180deg, 
-                         #e74c3c 180deg 240deg, #3498db 240deg 300deg, #2ecc71 300deg 360deg);
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            position: relative;
+        .wheel-wrapper { position: relative; margin-top: 50px; }
+        
+        #wheel {
+            width: 350px; height: 350px; border: 10px solid #f1c40f; border-radius: 50%;
+            position: relative; overflow: hidden;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            background: conic-gradient(
+                #e74c3c 0deg 60deg, #3498db 60deg 120deg, #2ecc71 120deg 180deg, 
+                #f1c40f 180deg 240deg, #9b59b6 240deg 300deg, #e67e22 300deg 360deg
+            );
         }
 
-        .item { position: absolute; font-weight: bold; font-size: 14px; text-shadow: 1px 1px 2px black; }
+        /* Pozisyon tèks yo sou wou an */
+        .slice { position: absolute; width: 50%; height: 50%; top: 0; right: 0; transform-origin: 0% 100%; display: flex; align-items: center; justify-content: center; }
+        .slice span { transform: rotate(30deg); font-weight: bold; font-size: 14px; text-shadow: 1px 1px 2px black; }
 
-        .paspò-img { width: 40px; height: 30px; }
+        /* Egwi a */
+        .pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #fff; z-index: 10; }
 
-        button { padding: 15px 30px; font-size: 18px; cursor: pointer; border: none; border-radius: 5px; margin-top: 20px; }
-        #btn-pay { background: #27ae60; color: white; }
-        #btn-spin { background: #f39c12; color: white; display: none; }
+        .paspò-icon { width: 30px; }
+
+        /* Modal Peman */
+        .modal { background: #34495e; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px; border: 2px solid #f1c40f; }
+        button { padding: 15px 30px; font-size: 18px; cursor: pointer; background: #e74c3c; color: white; border: none; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <h1>Roulette Paspò Ayisyen</h1>
-    <div id="roulette-wheel">
-        <div id="content" style="text-align:center;">Vire!</div>
+
+    <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <div id="wheel">
+            <div class="slice" style="transform: rotate(0deg)"><span>25HTG</span></div>
+            <div class="slice" style="transform: rotate(60deg)"><span>15HTG</span></div>
+            <div class="slice" style="transform: rotate(120deg)"><img src="paspo_ayisyen.jpg" class="paspò-icon"></div>
+            <div class="slice" style="transform: rotate(180deg)"><span>50HTG</span></div>
+            <div class="slice" style="transform: rotate(240deg)"><span>5HTG</span></div>
+            <div class="slice" style="transform: rotate(300deg)"><img src="paspo_ayisyen.jpg" class="paspò-icon"></div>
+        </div>
     </div>
 
-    <button id="btn-pay" onclick="peye()">Peye 100 Goud</button>
-    <button id="btn-spin" onclick="vireRoulette()">VIRE ROULETTE LA</button>
-
-    <div id="status" style="margin-top: 20px;">Esè: 0 / 500</div>
+    <div class="modal" id="control-box">
+        <div id="status">Esè: 0 / 500</div>
+        <button id="btn-pay" onclick="peye()">Peye 100 Goud pou vire</button>
+        <button id="btn-spin" onclick="vireRoulette()" style="display:none; background: #27ae60;">VIRE WOU A</button>
+    </div>
 
     <script>
         let counter = 0;
-        let hasPaid = false;
-        const wheel = document.getElementById('roulette-wheel');
+        let currentRotation = 0;
 
         function peye() {
-            hasPaid = true;
+            alert("Peman Resevwa! Ou ka vire kounye a.");
             document.getElementById('btn-pay').style.display = 'none';
             document.getElementById('btn-spin').style.display = 'block';
-            alert("Peman konfime! Ou gen dwa vire.");
         }
 
         function vireRoulette() {
-            if (!hasPaid) return;
             counter++;
-            hasPaid = false;
-            document.getElementById('btn-spin').style.display = 'none';
-            document.getElementById('btn-pay').style.display = 'block';
             document.getElementById('status').innerText = `Esè: ${counter} / 500`;
-
-            // Kalkile wotasyon (min 5 vire konplè + degre o aza)
-            let rotation = Math.floor(Math.random() * 360) + 1800; 
-            wheel.style.transform = `rotate(${rotation}deg)`;
+            
+            // Si se 500e fwa a, fòse l kanpe sou paspò (120 deg oswa 300 deg)
+            let rotation = (counter === 500) ? currentRotation + 1800 + 120 : currentRotation + Math.floor(Math.random() * 360) + 1800;
+            currentRotation = rotation;
+            
+            document.getElementById('wheel').style.transform = `rotate(${rotation}deg)`;
+            document.getElementById('btn-spin').style.display = 'none';
 
             setTimeout(() => {
-                if (counter >= 500) {
-                    document.getElementById('content').innerHTML = '<img src="paspo_ayisyen.jpg" class="paspò-img"><br>PASPÒ!';
-                    counter = 0; // Reset
-                } else {
-                    let prizes = ["25 HTG", "15 HTG", "10 HTG", "50 HTG", "5 HTG", "0 HTG"];
-                    document.getElementById('content').innerText = prizes[Math.floor(Math.random() * prizes.length)];
+                if (counter === 500) {
+                    alert("Felisitasyon! Ou genyen yon Paspò!");
+                    counter = 0;
                 }
-            }, 4000); // Tan an matche ak CSS transition
+                document.getElementById('btn-pay').style.display = 'block';
+            }, 5500);
         }
     </script>
 </body>
