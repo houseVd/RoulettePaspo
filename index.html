@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <title>Roulette Paspò Ayisyen</title>
     <style>
-        body { font-family: 'Arial', sans-serif; display: flex; flex-direction: column; align-items: center; background: #1a1a1a; color: white; }
-        .wheel-wrapper { position: relative; margin-top: 50px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; background: #121212; color: #ffffff; }
+        h1 { margin-top: 20px; color: #f1c40f; }
+        .wheel-wrapper { position: relative; margin-top: 40px; }
+        
         #wheel {
-            width: 350px; height: 350px; border: 10px solid #f1c40f; border-radius: 50%;
+            width: 350px; height: 350px; border: 12px solid #333; border-radius: 50%;
             position: relative; overflow: hidden;
             transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
             background: conic-gradient(
@@ -15,12 +17,17 @@
                 #f1c40f 180deg 240deg, #9b59b6 240deg 300deg, #e67e22 300deg 360deg
             );
         }
+        
         .slice { position: absolute; width: 50%; height: 50%; top: 0; right: 0; transform-origin: 0% 100%; display: flex; align-items: center; justify-content: center; }
-        .slice span { transform: rotate(30deg); font-weight: bold; font-size: 14px; text-shadow: 1px 1px 2px black; }
-        .pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #fff; z-index: 10; }
-        .paspò-icon { width: 50px; height: 35px; transform: rotate(30deg); }
-        .modal { background: #34495e; padding: 20px; border-radius: 10px; text-align: center; margin-top: 20px; border: 2px solid #f1c40f; }
-        button { padding: 15px 30px; font-size: 18px; cursor: pointer; background: #e74c3c; color: white; border: none; border-radius: 5px; font-weight: bold; }
+        .slice span { transform: rotate(30deg); font-weight: bold; font-size: 16px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        
+        .pointer { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 25px solid transparent; border-right: 25px solid transparent; border-top: 50px solid #ffffff; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        
+        .modal { background: #1e1e1e; padding: 30px; border-radius: 15px; text-align: center; margin-top: 40px; border: 1px solid #444; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        button { padding: 15px 40px; font-size: 18px; cursor: pointer; border: none; border-radius: 8px; font-weight: bold; transition: transform 0.2s, background 0.3s; }
+        button:hover { transform: scale(1.05); }
+        #btn-pay { background: #3498db; color: white; }
+        #btn-spin { background: #27ae60; color: white; display: none; }
     </style>
 </head>
 <body>
@@ -30,35 +37,37 @@
     <div class="wheel-wrapper">
         <div class="pointer"></div>
         <div id="wheel">
-            <div class="slice" style="transform: rotate(0deg)"><span>25HTG</span></div>
-            <div class="slice" style="transform: rotate(60deg)"><span>15HTG</span></div>
-            <div class="slice" style="transform: rotate(120deg)"><span>10HTG</span></div>
-            <div class="slice" style="transform: rotate(180deg)"><span>50HTG</span></div>
-            <div class="slice" style="transform: rotate(240deg)"><span>5HTG</span></div>
-            <div class="slice" style="transform: rotate(300deg)"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9Va2N8J8n7x-hbynpzMO3KN1fokZJcwcAKg&s" class="paspò-icon"></div>
-            </div>
+            <div class="slice" style="transform: rotate(0deg)"><span>25 HTG</span></div>
+            <div class="slice" style="transform: rotate(60deg)"><span>15 HTG</span></div>
+            <div class="slice" style="transform: rotate(120deg)"><span>20 HTG</span></div>
+            <div class="slice" style="transform: rotate(180deg)"><span>50 HTG</span></div>
+            <div class="slice" style="transform: rotate(240deg)"><span>5 HTG</span></div>
+            <div class="slice" style="transform: rotate(300deg)"><span style="font-size: 18px; color: #fff;">PASPÒ</span></div>
+        </div>
     </div>
 
-    <div class="modal" id="control-box">
+    <div class="modal">
         <button id="btn-pay" onclick="peye()">Peye 100 Goud pou vire</button>
-        <button id="btn-spin" onclick="vireRoulette()" style="display:none; background: #27ae60;">VIRE WOU A</button>
+        <button id="btn-spin" onclick="vireRoulette()">VIRE WOU A</button>
     </div>
 
     <script>
         let counter = 0;
         let currentRotation = 0;
+        const prizes = ["25 HTG", "15 HTG", "20 HTG", "50 HTG", "5 HTG", "PASPÒ"];
 
         function peye() {
-            alert("Peman Resevwa! Ou ka vire kounye a.");
-            document.getElementById('btn-pay').style.display = 'none';
-            document.getElementById('btn-spin').style.display = 'block';
+            if(confirm("Èske ou sèten ou vle peye 100 Goud pou yon esè?")) {
+                document.getElementById('btn-pay').style.display = 'none';
+                document.getElementById('btn-spin').style.display = 'inline-block';
+            }
         }
 
         function vireRoulette() {
             counter++;
             document.getElementById('btn-spin').style.display = 'none';
             
-            // Si se 500e fwa a, fòse l kanpe sou paspò (300 degre)
+            // Si 500e fwa, fòse kanpe sou PASPÒ (300 degre)
             let rotation = (counter === 500) ? currentRotation + 1800 + 300 : currentRotation + Math.floor(Math.random() * 360) + 1800;
             currentRotation = rotation;
             
@@ -66,13 +75,16 @@
 
             setTimeout(() => {
                 if (counter === 500) {
-                    alert("Felisitasyon! Ou genyen yon PASPÒ AYISYEN!");
+                    alert("FELISITASYON! Ou genyen yon PASPÒ AYISYEN ofisyèl!");
                     counter = 0;
                 } else {
-                    alert("Ou genyen yon prim nan wou a!");
+                    // Kalkile ki prim ki nan 300 degre (apre wotasyon)
+                    let finalDeg = (rotation % 360);
+                    let index = Math.floor(finalDeg / 60);
+                    alert("Domaj! Ou genyen: " + prizes[index]);
                 }
-                document.getElementById('btn-pay').style.display = 'block';
-            }, 5500);
+                document.getElementById('btn-pay').style.display = 'inline-block';
+            }, 5000);
         }
     </script>
 </body>
